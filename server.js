@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
@@ -8,6 +9,13 @@ const app = express();
 connectDB();
 
 // Init Middleware
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://react-to-do-app-ujmk.vercel.app'
+  ],
+  credentials: true
+}));
 app.use(express.json({ extended: false }));
 
 // Define Routes
@@ -18,7 +26,6 @@ app.use('/api/tags', require('./routes/api/tags'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
-  // Set static folder
   app.use(express.static('client/build'));
 
   app.get('*', (req, res) => {
@@ -29,4 +36,3 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
